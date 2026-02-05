@@ -4036,6 +4036,7 @@ dependencies = [
  "holochain_keystore",
  "holochain_types",
  "holochain_util",
+ "kitsune2",
  "kitsune2_api",
  "kitsune2_core",
  "kitsune_p2p_mdns",

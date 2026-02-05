@@ -15,6 +15,8 @@
     scaffolding.inputs.holochain-nix-builders.follows =
       "holochain-nix-builders";
     scaffolding.inputs.holonix.follows = "holonix";
+    webkitnixpkgs.url =
+      "github:nixos/nixpkgs/ed4db9c6c75079ff3570a9e3eb6806c8f692dc26";
   };
 
   nixConfig = {
@@ -92,12 +94,12 @@
         # in pkgs.rust-bin.stable."1.85.0".minimal;
 
         dependencies.tauriApp = let
-          # pkgs = if inputs.nixpkgs.legacyPackages.${system}.stdenv.isLinux then
-          #   inputs.webkitnixpkgs.legacyPackages.${system}
-          # else
-          #   inputs.nixpkgs.legacyPackages.${system};
+          pkgs = if inputs.nixpkgs.legacyPackages.${system}.stdenv.isLinux then
+            inputs.webkitnixpkgs.legacyPackages.${system}
+          else
+            inputs.nixpkgs.legacyPackages.${system};
           buildInputs = (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-            # webkitgtk # Brings libwebkit2gtk-4.0.so.37
+            webkitgtk # Brings libwebkit2gtk-4.0.so.37
             webkitgtk_4_1 # Needed for javascriptcoregtk
             # openssl
             # openssl_3
@@ -137,7 +139,7 @@
           ]));
           nativeBuildInputs = (with pkgs; [ perl pkg-config makeWrapper ])
             ++ (lib.optionals pkgs.stdenv.isLinux
-              (with pkgs; [ wrapGAppsHook3 ]))
+              (with pkgs; [ wrapGAppsHook ]))
             ++ (lib.optionals pkgs.stdenv.isDarwin [ pkgs.libiconv ]);
         in { inherit buildInputs nativeBuildInputs; };
 
@@ -149,10 +151,10 @@
         };
 
         devShells.tauriDev = let
-          # pkgs = if inputs.nixpkgs.legacyPackages.${system}.stdenv.isLinux then
-          #   inputs.webkitnixpkgs.legacyPackages.${system}
-          # else
-          #   inputs.nixpkgs.legacyPackages.${system};
+          pkgs = if inputs.nixpkgs.legacyPackages.${system}.stdenv.isLinux then
+            inputs.webkitnixpkgs.legacyPackages.${system}
+          else
+            inputs.nixpkgs.legacyPackages.${system};
         in pkgs.mkShell {
           packages = with pkgs;
             [ packages.tauriRust shared-mime-info gsettings-desktop-schemas ]
